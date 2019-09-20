@@ -10,15 +10,17 @@
 //
 
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::io;
-use std::error::Error;
 use std::time::SystemTime;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let diff_in_minute = args.get(1).expect("minutes not found");
-    let diff_in_minute = diff_in_minute.parse::<u64>().expect("minutes should be number");
+    let diff_in_minute = diff_in_minute
+        .parse::<u64>()
+        .expect("minutes should be number");
 
     let now = now().unwrap();
     let mut line = String::new();
@@ -51,7 +53,7 @@ fn handle_path(line: &String, now: u64, diff_in_minute: u64) {
 
     let mtime = match mtime(path) {
         Ok(mtime) => mtime,
-        Err(_) => return
+        Err(_) => return,
     };
 
     if (now - mtime) / 60 <= diff_in_minute - 1 {
