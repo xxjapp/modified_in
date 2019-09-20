@@ -9,20 +9,18 @@
 //      # locate XXXX | modified_in 1
 //
 
-use filetime::FileTime;
 use std::env;
 use std::fs;
 use std::io;
+use std::error::Error;
 use std::time::SystemTime;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let diff_in_minute = args.get(1).expect("minutes not found");
-    let diff_in_minute = diff_in_minute
-        .parse::<i64>()
-        .expect("minutes should be number");
+    let diff_in_minute = diff_in_minute.parse::<u64>().expect("minutes should be number");
 
-    let now = now_as_secs();
+    let now = now().unwrap();
     let mut line = String::new();
 
     loop {
@@ -44,33 +42,34 @@ fn main() {
     }
 }
 
-fn handle_path(line: &String, now: u64, diff_in_minute: i64) {
+fn handle_path(line: &String, now: u64, diff_in_minute: u64) {
     let path = line.trim();
 
     if path.len() == 0 {
         return;
     }
 
-    let mtime = mtime_as_secs(path);
+    let mtime = match mtime(path) {
+        Ok(mtime) => mtime,
+        Err(_) => return
+    };
 
-    if (now as i64 - mtime) / 60 <= diff_in_minute - 1 {
+    if (now - mtime) / 60 <= diff_in_minute - 1 {
         println!("{}", path);
     }
 }
 
-fn mtime_as_secs(path: &str) -> i64 {
-    match fs::metadata(path) {
-        Ok(metadata) => {
-            let mtime = FileTime::from_last_modification_time(&metadata);
-            mtime.unix_seconds()
-        }
-        Err(_) => 0,
-    }
+// get file/folder modified time in seconds
+fn mtime(path: &str) -> Result<u64, Box<dyn Error>> {
+    since_epoch(&fs::metadata(path)?.modified()?)
 }
 
-fn now_as_secs() -> u64 {
-    let now = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .expect("SystemTime before UNIX EPOCH!");
-    now.as_secs()
+// get now time in seconds
+fn now() -> Result<u64, Box<dyn Error>> {
+    since_epoch(&SystemTime::now())
+}
+
+// get time value in seconds since epoch
+fn since_epoch(t: &SystemTime) -> Result<u64, Box<dyn Error>> {
+    Ok(t.duration_since(SystemTime::UNIX_EPOCH)?.as_secs())
 }
