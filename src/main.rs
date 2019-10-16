@@ -1,7 +1,10 @@
 //
 // filter input file by checking its modified time
 //
-// Usage examples:
+// Usage:
+//      # <other_command> | modified_in [diff_in_minute]
+//
+// Examples:
 //      1) check if Cargo.toml modified in 10 minutes
 //      # echo Cargo.toml | modified_in 10
 //
@@ -16,8 +19,10 @@ use std::io;
 use std::time::SystemTime;
 
 fn main() {
+    let default_diff_in_minute = String::from("1");
+
     let args: Vec<String> = env::args().collect();
-    let diff_in_minute = args.get(1).expect("minutes not found");
+    let diff_in_minute = args.get(1).unwrap_or(&default_diff_in_minute);
     let diff_in_minute = diff_in_minute
         .parse::<u64>()
         .expect("minutes should be number");
