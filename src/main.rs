@@ -2,13 +2,13 @@
 // filter input file by checking its modified time
 //
 // Usage:
-//      # <other_command> | modified_in [diff_in_minute]
+//      # <other_command> | modified_in [diff_in_seconds]
 //
 // Examples:
-//      1) check if Cargo.toml modified in 10 minutes
+//      1) check if Cargo.toml modified in 10 seconds
 //      # echo Cargo.toml | modified_in 10
 //
-//      2) filter result files of locate which is modified in 1 minutes
+//      2) filter result files of locate which is modified in 1 second
 //      # locate XXXX | modified_in 1
 //
 
@@ -19,13 +19,13 @@ use std::io;
 use std::time::SystemTime;
 
 fn main() {
-    let default_diff_in_minute = String::from("1");
+    let default_diff_in_seconds = String::from("1");
 
     let args: Vec<String> = env::args().collect();
-    let diff_in_minute = args.get(1).unwrap_or(&default_diff_in_minute);
-    let diff_in_minute = diff_in_minute
+    let diff_in_seconds = args.get(1).unwrap_or(&default_diff_in_seconds);
+    let diff_in_seconds = diff_in_seconds
         .parse::<u64>()
-        .expect("minutes should be number");
+        .expect("diff_in_seconds should be a number");
 
     let now = now().unwrap();
     let mut line = String::new();
@@ -37,7 +37,7 @@ fn main() {
                     return;
                 }
 
-                handle_path(&line, now, diff_in_minute)
+                handle_path(&line, now, diff_in_seconds)
             }
             Err(error) => {
                 eprintln!("error: {}", error);
@@ -49,7 +49,7 @@ fn main() {
     }
 }
 
-fn handle_path(line: &String, now: u64, diff_in_minute: u64) {
+fn handle_path(line: &String, now: u64, diff_in_seconds: u64) {
     let path = line.trim();
 
     if path.len() == 0 {
@@ -61,7 +61,7 @@ fn handle_path(line: &String, now: u64, diff_in_minute: u64) {
         Err(_) => return,
     };
 
-    if (now - mtime) / 60 <= diff_in_minute - 1 {
+    if now - mtime <= diff_in_seconds - 1 {
         println!("{}", path);
     }
 }
