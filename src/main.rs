@@ -104,7 +104,7 @@ This tool filters a list of file paths provided via stdin, keeping only those
 files that have been modified within the specified time interval.
 
 Usage:
-  <command> | modified_in [diff_in_seconds]
+  <other_command> | modified_in [diff_in_seconds]
   modified_in --help
   modified_in --version
 
