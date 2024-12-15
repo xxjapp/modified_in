@@ -39,12 +39,12 @@ modified_in --version
 
 ## **Installation from binary**
 
-Follow these steps to download, extract, install, and verify the `modified_in` tool on your Linux system.
+Follow these steps to download and install the `modified_in` tool on your Linux system.
 
 ```bash
 wget https://github.com/xxjapp/modified_in/releases/download/v1.0.0/modified_in-linux-x64.tgz
-tar -xzf modified_in-linux.tar.gz
-install modified_in-linux /usr/local/bin/modified_in
+tar -xzf modified_in-linux-x64.tgz
+install modified_in-linux-x64 /usr/local/bin/modified_in
 modified_in --version
 ```
 
