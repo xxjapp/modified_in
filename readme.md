@@ -37,7 +37,18 @@ modified_in --version
    locate "XXXX" | modified_in 1
    ```
 
-## **Installation**
+## **Installation from binary**
+
+Follow these steps to download, extract, install, and verify the `modified_in` tool on your Linux system.
+
+```bash
+wget https://github.com/xxjapp/modified_in/releases/download/v1.0.0/modified_in-linux-x64.tgz
+tar -xzf modified_in-linux.tar.gz
+install modified_in-linux /usr/local/bin/modified_in
+modified_in --version
+```
+
+## **Installation from source**
 
 ### **Prerequisites**
 - Rust programming language and `cargo` installed on your system. If you don't have Rust installed, refer to the [Rust installation guide](https://www.rust-lang.org/tools/install).
